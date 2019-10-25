@@ -19,7 +19,7 @@ function saveBookmark(event) {
     var bookmarks = [];
 
     // check if the local storage is empty
-    if(localStorage.getItem('bookmarks') !== null) {
+    if (localStorage.getItem("bookmarks") !== null) {
         // Get bookmarks from local storage
         bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
     }
@@ -74,7 +74,7 @@ function saveBookmark(event) {
                 //console.log(event.target.parentElement.children[0].textContent);
                 var name = event.target.parentElement.children[0].textContent;
                 deleteBookmark(name);
-            })
+            });
 
             // Append h3, a, button into div
             div.appendChild(h3);
@@ -95,21 +95,42 @@ function deleteBookmark(name) {
  // Loop over bookmarks
  for (var i=0;i<bookmarks.length;i++) {
      // Looking up bookmark with given name, then delete it
-     if(bookmarks[i].name === name) {
+     if (bookmarks[i].name === name) {
          bookmarks.splice(i, 1);
          break;
      }
  }
 
  // Update localStorage
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+ localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
 
-    // re-fetch bookmarks output
-    fetchBookmarks();
+ // re-fetch bookmark output
+ fetchBookmarks();
+}
+// Select filter input
+var filter = document.querySelector("#filter");
+
+// filter bookmarks
+function filterBookmarks() {
+    // Select all bookmarks name
+    var bookmarks = document.querySelectorAll("#bookmarks div h3");
+    // console.log(bookmarks);
+
+    // loop over bookmarks
+    for (var i=0;i<bookmarks.length;i++) {
+        if (bookmarks[i].textContent.toUpperCase().includes(filter.value.toUpperCase())) {
+            bookmarks[i].parentNode.style.display = "block";
+        } else {
+            bookmarks[i].parentNode.style.display = "none";
+        }
+    }
 }
 
 // Adding event listener to submit button
-document.querySelector("form").addEventListener("submit", saveBookmark)
+document.querySelector("form").addEventListener("submit", saveBookmark);
 
 // Adding event listener  for page loading
 window.addEventListener("load", fetchBookmarks);
+
+// Adding event listener for filter input
+filter.addEventListener("input", filterBookmarks);
