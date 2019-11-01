@@ -1,34 +1,35 @@
 
 // Save Bookmark
-function saveBookmark(event) {
+// refactored using ES6 - const and arrow function
+const saveBookmark = e => {
     // Prevent from page reloading;
-    event.preventDefault();
+    e.preventDefault();
 
     // Get site name and url
-    var siteName = document.querySelector("#siteName").value;
-    var siteURL = document.querySelector("#siteURL").value;
+    const siteName = document.querySelector('#siteName').value;
+    const siteURL = document.querySelector('#siteURL').value;
     // console.log(siteName, siteURL);
 
     // create a bookmark object
-    var bookmark = {
+    const bookmark = {
         name: siteName,
         url: siteURL
     };
 
     // Store bookmark
-    var bookmarks = [];
+    let bookmarks = [];
 
     // check if the local storage is empty
-    if (localStorage.getItem("bookmarks") !== null) {
+    if (localStorage.getItem('bookmarks') !== null) {
         // Get bookmarks from local storage
-        bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+        bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
     }
 
     // adding new bookmark
     bookmarks.push(bookmark);
 
     // Update bookmarks in local storage
-    localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
 
     // fetch bookmarks
     fetchBookmarks();
@@ -36,43 +37,45 @@ function saveBookmark(event) {
     // empty input
     // siteName.value = "";
     // siteURL.value = "";
-    document.querySelector("form").reset();
-}
+    document.querySelector('form').reset();
+};
 
     // fetch bookmarks
-    function fetchBookmarks() {
+    const fetchBookmarks = () => {
         // Get bookmarks from local storage
-        var bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
 
         // Select the output bookmarks div
-        var output = document.querySelector("#bookmarks");
+        const output = document.querySelector('#bookmarks');
 
         // Reset the bookmarks  div
-        output.innerHTML = "";
+        output.innerHTML = '';
 
         // Loop over bookmarks
-        for (var i=0;i<bookmarks.length;i++){
+        // for (let i=0;i<bookmarks.length;i++)
+        for (let bookmark of bookmarks) {
             // Create div
-            var div = document.createElement("div");
+            const div = document.createElement('div');
             // Create h3
-            var h3 = document.createElement("h3");
-            h3.textContent = bookmarks[i].name;
+            const h3 = document.createElement('h3');
+            h3.textContent = bookmark.name;
 
             // Create visit link
-            var a = document.createElement("a");
-            a.href = bookmarks[i].url;
-            a.className = "btn btn-success";
-            a.textContent = "Visit";
+            const a = document.createElement('a');
+            //remove [i]
+            a.href = bookmarks.url;
+            a.className = 'btn btn-success';
+            a.textContent = 'Visit';
 
             // Create delete button
-            var button = document.createElement("button");
-            button.className = "btn btn-danger";
-            button.textContent = "Delete";
+            const button = document.createElement('button');
+            button.className = 'btn btn-danger';
+            button.textContent = 'Delete';
 
             // Add event listener to delete button
-            button.addEventListener("click", function(event) {
+            button.addEventListener('click', e => {
                 //console.log(event.target.parentElement.children[0].textContent);
-                var name = event.target.parentElement.children[0].textContent;
+                const name = e.target.parentElement.children[0].textContent;
                 deleteBookmark(name);
             });
 
@@ -84,16 +87,16 @@ function saveBookmark(event) {
             // Append div into output
             output.appendChild(div);
         }
-    }
+    };
 
 // Delete bookmark
-function deleteBookmark(name) {
+const deleteBookmark = name => {
  //console.log(name);
  // Get bookmarks from local storage
- var bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+ const bookmarks = JSON.parse(localStorage.getItem('bookmarks'));
 
  // Loop over bookmarks
- for (var i=0;i<bookmarks.length;i++) {
+ for (let i in bookmarks) {
      // Looking up bookmark with given name, then delete it
      if (bookmarks[i].name === name) {
          bookmarks.splice(i, 1);
@@ -102,35 +105,35 @@ function deleteBookmark(name) {
  }
 
  // Update localStorage
- localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+ localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
 
  // re-fetch bookmark output
  fetchBookmarks();
-}
+};
 // Select filter input
-var filter = document.querySelector("#filter");
+const filter = document.querySelector('#filter');
 
 // filter bookmarks
-function filterBookmarks() {
+const filterBookmarks = () => {
     // Select all bookmarks name
-    var bookmarks = document.querySelectorAll("#bookmarks div h3");
+    const bookmarks = document.querySelectorAll('#bookmarks div h3');
     // console.log(bookmarks);
 
     // loop over bookmarks
-    for (var i=0;i<bookmarks.length;i++) {
-        if (bookmarks[i].textContent.toUpperCase().includes(filter.value.toUpperCase())) {
-            bookmarks[i].parentNode.style.display = "block";
+    for (bookmark of bookmarks) {
+        if (bookmark.textContent.toUpperCase().includes(filter.value.toUpperCase())) {
+            bookmark.parentNode.style.display = 'block';
         } else {
-            bookmarks[i].parentNode.style.display = "none";
+            bookmark.parentNode.style.display = 'none';
         }
     }
-}
+};
 
 // Adding event listener to submit button
-document.querySelector("form").addEventListener("submit", saveBookmark);
+document.querySelector('form').addEventListener('submit', saveBookmark);
 
 // Adding event listener  for page loading
-window.addEventListener("load", fetchBookmarks);
+window.addEventListener('load', fetchBookmarks);
 
 // Adding event listener for filter input
-filter.addEventListener("input", filterBookmarks);
+filter.addEventListener('input', filterBookmarks);
